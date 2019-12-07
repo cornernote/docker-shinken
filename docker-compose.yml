@@ -4,7 +4,7 @@ services:
 
   shinken:
     build:
-      dockerfile: build/Dockerfile
+      dockerfile: Dockerfile
       context: .
     ports:
       - 80:80

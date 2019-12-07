@@ -64,10 +64,10 @@ RUN         gpg --keyserver keys.gnupg.net --recv-keys F8C1CA08A57B9ED7 && \
                 apt-get update && \
                 apt-get install -y thruk && \
                 apt-get clean
-ADD         build/files/etc/thruk/thruk_local.conf /etc/thruk/thruk_local.conf
+ADD         files/etc/thruk/thruk_local.conf /etc/thruk/thruk_local.conf
 
 # Install check_nrpe plugin
-ADD         build/files/usr/src/nrpe-2.15.tar.gz /usr/src/
+ADD         files/usr/src/nrpe-2.15.tar.gz /usr/src/
 RUN         cd /usr/src/nrpe-2.15/ && \
                 ./configure --with-nagios-user=shinken --with-nagios-group=shinken --with-nrpe-user=shinken --with-nrpe-group=shinken --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu && \
                 make all && \
@@ -77,58 +77,58 @@ RUN         cd /usr/src/nrpe-2.15/ && \
                 rm -rf /usr/src/nrpe-2.15
 
 # Configure apache
-ADD         build/files/etc/apache2/sites-available/shinken_apache.conf /etc/apache2/sites-available/shinken_apache.conf
+ADD         files/etc/apache2/sites-available/shinken_apache.conf /etc/apache2/sites-available/shinken_apache.conf
 RUN         ln -sf /etc/apache2/sites-available/shinken_apache.conf /etc/apache2/sites-enabled/shinken_apache.conf
 RUN         ln -sf /etc/apache2/mods-available/proxy* /etc/apache2/mods-enabled/
 RUN         ln -sf /etc/apache2/mods-available/slotmem_shm.load /etc/apache2/mods-enabled/
 RUN         ln -sf /etc/apache2/mods-available/xml2enc.load /etc/apache2/mods-enabled/
 
 # Configure Shinken modules
-ADD         build/files/etc/shinken/shinken.cfg /etc/shinken/shinken.cfg
-ADD         build/files/etc/shinken/brokers/broker-master.cfg /etc/shinken/brokers/broker-master.cfg
-ADD         build/files/etc/shinken/pollers/poller-master.cfg /etc/shinken/pollers/poller-master.cfg
-ADD         build/files/etc/shinken/schedulers/scheduler-master.cfg /etc/shinken/schedulers/scheduler-master.cfg
-ADD         build/files/etc/shinken/modules/webui2.cfg /etc/shinken/modules/webui2.cfg
-ADD         build/files/etc/shinken/modules/webui2/plugins/worldmap/plugin.cfg /var/lib/shinken/modules/webui2/plugins/worldmap/plugin.cfg
-ADD         build/files/etc/shinken/modules/livestatus.cfg /etc/shinken/modules/livestatus.cfg
-ADD         build/files/etc/shinken/modules/graphite.cfg /etc/shinken/modules/graphite.cfg
-ADD         build/files/etc/shinken/modules/ui-graphite.cfg /etc/shinken/modules/ui-graphite.cfg
-ADD         build/files/etc/shinken/htpasswd.users /etc/shinken/htpasswd.users
+ADD         files/etc/shinken/shinken.cfg /etc/shinken/shinken.cfg
+ADD         files/etc/shinken/brokers/broker-master.cfg /etc/shinken/brokers/broker-master.cfg
+ADD         files/etc/shinken/pollers/poller-master.cfg /etc/shinken/pollers/poller-master.cfg
+ADD         files/etc/shinken/schedulers/scheduler-master.cfg /etc/shinken/schedulers/scheduler-master.cfg
+ADD         files/etc/shinken/modules/webui2.cfg /etc/shinken/modules/webui2.cfg
+ADD         files/etc/shinken/modules/webui2/plugins/worldmap/plugin.cfg /var/lib/shinken/modules/webui2/plugins/worldmap/plugin.cfg
+ADD         files/etc/shinken/modules/livestatus.cfg /etc/shinken/modules/livestatus.cfg
+ADD         files/etc/shinken/modules/graphite.cfg /etc/shinken/modules/graphite.cfg
+ADD         files/etc/shinken/modules/ui-graphite.cfg /etc/shinken/modules/ui-graphite.cfg
+ADD         files/etc/shinken/htpasswd.users /etc/shinken/htpasswd.users
 RUN         mkdir -p /etc/shinken/custom_configs /usr/local/custom_plugins && \
                 rm -f /etc/thruk/htpasswd && \
                 ln -sf /etc/shinken/htpasswd.users /etc/thruk/htpasswd && \
                 chown -R shinken:shinken /etc/shinken/
 
 # Configure graphite
-ADD         build/files/opt/graphite/conf/carbon.conf /opt/graphite/conf/carbon.conf
-ADD         build/files/opt/graphite/conf/storage-schemas.conf /opt/graphite/conf/storage-schemas.conf
-ADD         build/files/opt/graphite/conf/storage-aggregation.conf /opt/graphite/conf/storage-aggregation.conf
-ADD         build/files/opt/graphite/webapp/graphite/local_settings.py /opt/graphite/webapp/graphite/local_settings.py
+ADD         files/opt/graphite/conf/carbon.conf /opt/graphite/conf/carbon.conf
+ADD         files/opt/graphite/conf/storage-schemas.conf /opt/graphite/conf/storage-schemas.conf
+ADD         files/opt/graphite/conf/storage-aggregation.conf /opt/graphite/conf/storage-aggregation.conf
+ADD         files/opt/graphite/webapp/graphite/local_settings.py /opt/graphite/webapp/graphite/local_settings.py
 RUN         mkdir -p /var/log/graphite && \
                 cd /opt/graphite/webapp/graphite/ && \
                 python manage.py syncdb --noinput
 
 # Add shinken config watcher to restart arbiter, when changes happen
-ADD         build/files/usr/bin/watch_shinken_config.sh /usr/bin/watch_shinken_config.sh
+ADD         files/usr/bin/watch_shinken_config.sh /usr/bin/watch_shinken_config.sh
 RUN         chmod 755 /usr/bin/watch_shinken_config.sh
 
 # Copy extra NRPE plugins and fix permissions
-ADD         build/files/usr/lib/nagios/plugins/ /usr/lib/nagios/plugins/
+ADD         files/usr/lib/nagios/plugins/ /usr/lib/nagios/plugins/
 RUN         cd /usr/lib/nagios/plugins/ && \
                 chmod a+x * && \
                 chmod u+s check_apt restart_service check_ping check_icmp check_fping apt_update
 
 # Copy configs
-#COPY        build/files/* /
+#COPY        files/* /
 
 # Define mountable directories
 VOLUME      ["/etc/shinken/custom_configs", "/usr/local/custom_plugins"]
 
 # configure ssmtp
-ADD         build/files/etc/ssmtp/* /etc/ssmtp/
+ADD         files/etc/ssmtp/* /etc/ssmtp/
 
 # configure supervisor
-ADD         build/files/etc/supervisor/conf.d/* /etc/supervisor/conf.d/
+ADD         files/etc/supervisor/conf.d/* /etc/supervisor/conf.d/
 
 # Expost port 80 (apache2)
 EXPOSE  80
