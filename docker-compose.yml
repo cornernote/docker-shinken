@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+
+  shinken:
+    build:
+      dockerfile: build/Dockerfile
+      context: .
+    ports:
+      - 80:80
