@@ -16,8 +16,8 @@ docker images
 Tag image:
 
 ```
-docker tag b15a3465e400 cornernote/shinken:latest
-docker tag b15a3465e400 cornernote/shinken:2.4.3-nrpe-2.15
+docker tag ad6839608d54 cornernote/shinken:latest
+docker tag ad6839608d54 cornernote/shinken:2.4.3-nrpe-2.15
 ```
 
 Push to hub.docker.com:
