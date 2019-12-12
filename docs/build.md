@@ -16,16 +16,16 @@ docker images
 Tag image:
 
 ```
-docker tag ad6839608d54 cornernote/shinken:latest
-docker tag ad6839608d54 cornernote/shinken:2.4.3-nrpe-2.15
+docker tag e1313bf3693e cornernote/shinken:2.4.3-nrpe-2.15
+docker tag e1313bf3693e cornernote/shinken:latest
 ```
 
 Push to hub.docker.com:
 
 ```
 docker login
-docker push cornernote/shinken:latest
 docker push cornernote/shinken:2.4.3-nrpe-2.15
+docker push cornernote/shinken:latest
 ```
 
 ## Shell into Image
